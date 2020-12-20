@@ -56,6 +56,7 @@ breweries <- breweries %>% rename(Brewery_Name = Name)
 
 beerbrew <- merge(beers,breweries, by.x = "Brewery_id", by.y = "Brew_ID")
 head(beerbrew)
+ 
 
 ```
 
