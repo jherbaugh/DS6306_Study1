@@ -51,7 +51,7 @@ dim(breweries) #558 observations x 4 columns
 sum(is.na(beers$Brewery_id)) #there are no missing values on the merge var
 sum(is.na(breweries$Brew_ID)) #there are no missing values on the merge var
 
-beers <- beers %>% rename(Beer_Name = Name)
+beers <- beers %>% rename(Beer_Name = Name) #both dataframes have "Name"
 breweries <- breweries %>% rename(Brewery_Name = Name)
 
 beerbrew <- merge(beers,breweries, by.x = "Brewery_id", by.y = "Brew_ID")
