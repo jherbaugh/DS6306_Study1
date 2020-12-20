@@ -1,0 +1,61 @@
+---
+title: "DS6306 Case Study 1"
+author: "Rick Fontenot"
+date: "12/20/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For this case study we assume that our audience is the CEO and CFO of Budweiser (our client) and that they only have had one class in statistics. They have hired us to answer 7 questions and beyond those general questions we will speculate / anticipate what may be of interest to them.
+
+We will start by importing the following data for analysis:
+
+Beers.csv:
+Name: Name of the beer.
+Beer_ID: Unique identifier of the beer.
+ABV: Alcohol by volume of the beer.
+IBU: International Bitterness Units of the beer.
+Brewery_ID: Brewery id associated with the beer.
+Style: Style of the beer.
+Ounces: Ounces of beer.
+
+Breweries.csv:
+Brew_ID: Unique identifier of the brewery.
+Name: Name of the brewery.
+City: City where the brewery is located.
+State: U.S. State where the brewery is located.
+
+```{r}
+
+library(dplyr)
+library(tidyverse)
+
+beers = read.csv("https://raw.githubusercontent.com/rickfontenot/DS6306_Study1/main/Beers.csv", header = TRUE)
+
+breweries = read.csv("https://raw.githubusercontent.com/rickfontenot/DS6306_Study1/main/Breweries.csv", header = TRUE)
+
+head(beers)
+head(breweries)
+
+#install.packages("visdat")
+library(visdat)
+vis_dat(beers, warn_large_data=FALSE)
+vis_dat(breweries, warn_large_data=FALSE)
+
+dim(beers) #2410 observations x 7 columns
+dim(breweries) #558 observations x 4 columns
+
+sum(is.na(beers$Brewery_id)) #there are no missing values on the merge var
+sum(is.na(breweries$Brew_ID)) #there are no missing values on the merge var
+
+beers <- beers %>% rename(Beer_Name = Name)
+breweries <- breweries %>% rename(Brewery_Name = Name)
+
+beerbrew <- merge(beers,breweries, by.x = "Brewery_id", by.y = "Brew_ID")
+head(beerbrew)
+
+```
+
