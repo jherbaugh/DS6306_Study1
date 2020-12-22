@@ -29,13 +29,13 @@ City: City where the brewery is located.
 State: U.S. State where the brewery is located.
 
 ```{r}
-
 library(dplyr)
 library(tidyverse)
 
 beers = read.csv("https://raw.githubusercontent.com/rickfontenot/DS6306_Study1/main/Beers.csv", header = TRUE)
 
 breweries = read.csv("https://raw.githubusercontent.com/rickfontenot/DS6306_Study1/main/Breweries.csv", header = TRUE)
+
 
 head(beers)
 head(breweries)
@@ -55,7 +55,81 @@ beers <- beers %>% rename(Beer_Name = Name) #both dataframes have "Name"
 breweries <- breweries %>% rename(Brewery_Name = Name)
 
 beerbrew <- merge(beers,breweries, by.x = "Brewery_id", by.y = "Brew_ID")
-head(beerbrew)
+head(beerbrew,6)
+tail(beerbrew,6) # added to complete Question 2 
+```
+
+
+```{r, Joe's EDA}
+#Joe EDA plotting on a map. 
+#install.packages('usmap')
+library(usmpa)
+```
+
+
+```{r, Joe's EDA, Question 1}
+#Question 1 How many Breweries are in each state
+
+#table of number of Breweries by state
+st.brew <- table(beerbrew$State)
+
+#visualize that table
+beerbrew %>% ggplot(aes(x=State),color=State) + 
+  geom_histogram(binwidth = 5, stat="count") +
+  theme(axis.text.x=element_text(angle=45,size = rel(.8), 
+        margin = margin(.05, unit = "cm"),vjust =.5))
+```
+
+
+```{r, Joe's EDA, Question 3}
+#Question 3 Address Missing values in each col
+
+colSums(is.na(beerbrew))
+
+#ABV has 62 missing values
+#IBU has 1005 missing values 2410 total 
+#no other NAs found
+#it is likely that different state differ on their requirement to track IBU and ABV to operate within that state.
+```
+
+
+```{r, Joe's EDA, Compute Median by state ABV and IBU}
+#Question 4 compute median median abv and ibu
+#i'm making the choice to omit given 1005 or 2410 na values
+
+st.ibu <- aggregate(IBU~State, data =  beerbrew, median, na.action=na.omit)
+st.ibu
+
+###visualize the state IBU median
+st.ibu %>% ggplot(aes(x=State,y=IBU, fill=IBU)) + scale_fill_distiller(palette='Spectral') + geom_bar(stat = "identity") +
+  theme(axis.text.x=element_text(angle=45,size = rel(.8), 
+        margin = margin(.05, unit = "cm"),vjust =.5, hjust = 1))
+
+
+#by date median ABV omitted na values
+#Here it is practical to impute the missing values
+st.abv <- aggregate(ABV~State, data = beerbrew, median, na.action = na.omit)
+st.abv
+
+#visualize the state abv medians
+st.abv %>% ggplot(aes(x=State,y=ABV, fill=ABV)) + scale_fill_distiller(palette='Spectral') + geom_bar(stat = "identity") +
+  theme(axis.text.x=element_text(angle=45,size = rel(.8), 
+        margin = margin(.05, unit = "cm"),vjust =.5, hjust = 1))
+
+#x is a table filtered for the missing abv values.
+x <- beerbrew[!complete.cases(beerbrew$ABV),]
 
 ```
+```{r Joe's EDA, Question 5 which state has the highest abv /ibu}
+
+max.abv <- max(beerbrew$ABV,na.rm = T)
+max.abv
+
+max.ibu <- max(beerbrew$IBU, na.rm = T)
+max.ibu
+
+
+
+```
+
 
