@@ -32,6 +32,7 @@ State: U.S. State where the brewery is located.
 library(dplyr)
 library(tidyverse)
 
+
 beers = read.csv("https://raw.githubusercontent.com/rickfontenot/DS6306_Study1/main/Beers.csv", header = TRUE)
 
 breweries = read.csv("https://raw.githubusercontent.com/rickfontenot/DS6306_Study1/main/Breweries.csv", header = TRUE)
@@ -63,7 +64,7 @@ tail(beerbrew,6) # added to complete Question 2
 ```{r, Joe's EDA}
 #Joe EDA plotting on a map. 
 #install.packages('usmap')
-library(usmpa)
+library(usmap)
 ```
 
 
@@ -128,8 +129,37 @@ max.abv
 max.ibu <- max(beerbrew$IBU, na.rm = T)
 max.ibu
 
-
+ 
 
 ```
 
+```{r Joe's EDA, Question 6 Comment on summary statistics distribution of ABV variable}
 
+
+summary(beerbrew$ABV)
+
+#Distribution of ABV Variable 
+beerbrew %>% select(ABV) %>% ggplot(mapping=aes(x= ABV)) +
+  geom_histogram(bins = 50) 
+
+# Compare by State 
+beerbrew %>% select(ABV, State) %>% ggplot(mapping=aes(x=ABV)) +
+  geom_histogram(bins = 50) + facet_wrap(~State)
+  
+
+```
+
+```{r Joe's EDA, Question 7, Is there a relations between IBU and ABV}
+
+beerbrew %>% ggplot(mapping=aes(y=IBU, x=ABV)) + geom_point()+
+  geom_point(position=position_jitter(width=0.01),alpha=0.5)+
+  geom_smooth(method="lm",se=FALSE,size=2)+
+  labs(title="Correlation between ABV and IBU")
+
+
+# correlation test
+
+IbuAbv.cor <- cor.test(beerbrew$IBU,beerbrew$ABV, method= 'pearson')
+IbuAbv.cor # cor test result 0.6706
+
+```
