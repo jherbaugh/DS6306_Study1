@@ -56,12 +56,21 @@ beers <- beers %>% rename(Beer_Name = Name) #both dataframes have "Name"
 breweries <- breweries %>% rename(Brewery_Name = Name)
 
 beerbrew <- merge(beers,breweries, by.x = "Brewery_id", by.y = "Brew_ID")
-<<<<<<< HEAD
 head(beerbrew)
  
-=======
 head(beerbrew,6)
-tail(beerbrew,6) # added to complete Question 2 
+tail(beerbrew,6) # added to complete Question 2
+
+beerbrew["Class"] <- ifelse(str_detect(beerbrew$Style,"IPA"),"IPA", ifelse(str_detect(beerbrew$Style,"Ale"),"Ale", ifelse(str_detect(beerbrew$Style,"Lager"),"Lager", ifelse(str_detect(beerbrew$Style,"Stout"),"Stout", ifelse(str_detect(beerbrew$Style,"Pilsner"),"Pilsner", ifelse(str_detect(beerbrew$Style,"Pilsener"),"Pilsner", ifelse(str_detect(beerbrew$Style,"Porter"),"Porter", ifelse(str_detect(beerbrew$Style,"APA"),"APA", ifelse(str_detect(beerbrew$Style,"Cider"),"Cider", ifelse(str_detect(beerbrew$Style,"Witbier"),"Witbier", ifelse(str_detect(beerbrew$Style,"Kölsch"),"Kölsch", ifelse(str_detect(beerbrew$Style,"Fruit"),"Fruit", ifelse(str_detect(beerbrew$Style,"Hefeweizen"),"Hefeweizen", ifelse(str_detect(beerbrew$Style,"Oktoberfest"),"Oktoberfest", ifelse(str_detect(beerbrew$Style,"Bitter"),"Bitter",
+"Other")))))))))))))))
+
+beerbrew %>%ggplot(aes(x = Class)) + geom_bar() +
+ggtitle("Distribution of Styles") + coord_flip() + xlab("Style") + ylab("Count")
+
+library(GGally)
+beerbrew %>% select(ABV, IBU, Class) %>% ggpairs(aes(color=Class))
+
+beerbrew %>% ggplot(mapping=aes(y=IBU, x=ABV,color=Class)) + geom_point(size=0.5, position="jitter")+ geom_smooth(method="lm",se=FALSE,size=1)+ labs(title="Correlation between ABV and IBU")
 ```
 
 
@@ -88,7 +97,6 @@ beerbrew %>% ggplot(aes(x=State),color=State) +
 
 ```{r, Joe's EDA, Question 3}
 #Question 3 Address Missing values in each col
->>>>>>> f331a4642d41c57e6ea2f33afc99c84955eb6f8b
 
 colSums(is.na(beerbrew))
 
@@ -166,5 +174,9 @@ beerbrew %>% ggplot(mapping=aes(y=IBU, x=ABV)) + geom_point()+
 
 IbuAbv.cor <- cor.test(beerbrew$IBU,beerbrew$ABV, method= 'pearson')
 IbuAbv.cor # cor test result 0.6706
+
+```
+
+```{r}
 
 ```
